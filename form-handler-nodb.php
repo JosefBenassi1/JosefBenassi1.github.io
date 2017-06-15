@@ -10,7 +10,7 @@
                 " || Message: ".$message;
 //Insert your email here
                 mail("bennyjoe100@hotmail.com", 'Message received from website contact form.', $finalMessage);
-                header("Location: index.html");
+                echo 'Thank you for your submission.  Please <a href="index.html">Click here to return to our homepage.';
         }
 ?>
 
