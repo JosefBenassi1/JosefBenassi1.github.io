@@ -437,10 +437,7 @@ ul.img-list li:hover span.text-content {
   .download-section {
     padding: 100px 0;
   }
-   .first-section {
-    padding: 100px 0;
-    
-  }
+ 
   #map {
     height: 400px;
     margin-top: 250px;
@@ -528,7 +525,15 @@ ul.banner-social-buttons {
   }
 }
 
+  @media only screen and (max-width: 320px) {
+  ul.img-list  {
+  float:center;
+}
 
+]
+
+
+          
 
 footer {
   padding: 50px 0;
