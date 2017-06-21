@@ -8,6 +8,8 @@ body {
   height: 100%;
   font-family: "Lora", "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: white;
+   background: url('../img/danback2.jpg') no-repeat center center; -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover; background-size: cover; background-attachment: fixed; padding: 50px 0;no-repeat center center;
+  background-size: cover;
   
 }
 html {
@@ -250,8 +252,7 @@ transform: scale(-1, 1);
 }
 .content-section {
   padding-top: 80px;
-  background: url('../img/danback2.jpg') no-repeat center center; -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover; background-size: cover; background-attachment: fixed; padding: 50px 0;no-repeat center center;
-  background-size: cover;
+ 
   
 
 }
