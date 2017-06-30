@@ -34,7 +34,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         z-index: 1;
         height: 64px;
         line-height: 64px;
-        background-color: rgba(0, 0, 0, 0.85);
+        background-color: rgba(0, 700, 700, 0.30);
         border-bottom: 1px solid #222;
         -webkit-backdrop-filter: saturate(180%) blur(20px);
       }
@@ -75,6 +75,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         transition: transform 0.2s ease-out;
       }
 
+       .pie-logo {
+        margin-left: 16px;
+        width: 90px;
+        height: 90px;
+        transition: transform 0.2s ease-out;
+      }
+
       #leftItem {
         min-width: 40px;
         color: white;
@@ -92,11 +99,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         transform: translateX(129px) rotateZ(360deg);
       }
 
+       [threshold-triggered] .pie-logo {
+        transform: translateX(129px) rotateZ(360deg);
+      }
+
       @media (max-width: 640px) {
         .title {
           font-size: 10px;
         }
         [threshold-triggered] .chrome-logo {
+          transform: translateX(120px) rotateZ(360deg);
+        }
+         [threshold-triggered] .pie-logo {
           transform: translateX(120px) rotateZ(360deg);
         }
       }
@@ -112,42 +126,85 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <app-header condenses reveals threshold="1">
       <app-toolbar>
         <paper-icon-button id="leftItem"></paper-icon-button>
-        <a href="/" title="Developer Channel">
+        <a href="/" title="Pie Scotland">
           <!-- svg logo -->
-          <svg class="chrome-logo" xmlns="http://www.w3.org/2000/svg" viewBox="15.5 15.5 224.5 224.5">
-            <defs>
-              <radialGradient cy="0" cx="0.5" id="r">
-               <stop stop-color="#f06b59"/>
-               <stop offset="1" stop-color="#df2227"/>
-              </radialGradient>
-              <radialGradient r="0.76" cy="0.3" cx="0.65" id="g">
-               <stop offset="0.65" stop-color="#4cb749"/>
-               <stop offset="1" stop-color="#388b41"/>
-              </radialGradient>
-              <radialGradient r="0.8" cy="0.25" cx="0.36" id="y">
-               <stop offset="0.6" stop-color="#FCD209"/>
-               <stop offset="0.7" stop-color="#f7c616"/>
-               <stop offset="1" stop-color="#bc821e"/>
-              </radialGradient>
-              <radialGradient r="1" cy="0" cx="0.5" spreadMethod="pad" id="cf">
-               <stop offset="0.1" stop-color="#7FB3DF"/>
-               <stop offset="0.9" stop-color="#0F5B94"/>
-              </radialGradient>
-              <radialGradient id="cb" r="1" cy="0" cx="0.5">
-               <stop offset="0" stop-color="#F6F0EE"/>
-               <stop offset="1" stop-color="#ddd"/>
-              </radialGradient>
-            </defs>
-            <path d="m198,148a70,70 0 0 0 -140,0l20,0a50,50 0 0 1 100,0" fill-opacity="0.1"/>
-            <circle r="45" cx="127.5" cy="127.6" fill="url(#cf)" stroke="url(#cb)" stroke-width="9" />
-            <path d="m228,78a112,112 0 0 0 -193,-13l45,78a50,50 0 0 1 47,-65" fill="url(#r)"/>
-            <path d="m35,65a112,112 0 0 0 84,174l47,-80a50,50 0 0 1 -86,-16" fill="url(#g)"/>
-            <path d="m119,239a112,112 0 0 0 109,-161l-101,0a50,50 0 0 1 39,81" fill="url(#y)"/>
-            <path d="m35,65l45,78a50,50 0 0 1 2,-34l-45,-47" opacity="0.075"/>
-            <path d="m119,239l47,-80a50,50 0 0 1 -29,17l-20,63" opacity="0.05"/>
-            <path d="m228,78l-101,0a50,50 0 0 1 39,19l64,-16" opacity="0.05"/>
+        <svg class = "pie-logo" version="1.0" xmlns="http://www.w3.org/2000/svg"
+        width="634.000000pt" height="242.000000pt" viewBox="0 0 634.000000 242.000000"
+        preserveAspectRatio="xMidYMid meet">
+          
+          <g transform="translate(0.000000,242.000000) scale(0.100000,-0.100000)"
+          fill="#000000" stroke="none">
+          <path d="M3493 2203 c-10 -3 -13 -71 -13 -289 l0 -284 40 0 39 0 3 127 3 127
+          50 2 c28 1 56 3 63 3 6 1 12 14 12 31 0 29 -1 29 -62 32 l-63 3 0 90 0 90 73
+          3 c72 3 72 3 72 31 0 17 -7 31 -16 35 -19 7 -183 7 -201 -1z"/>
+          <path d="M3783 2203 l-23 -4 0 -285 0 -284 40 0 40 0 -2 287 c-3 310 -1 297
+          -55 286z"/>
+          <path d="M3960 2202 l-35 -7 -3 -269 c-2 -190 1 -273 9 -282 8 -10 41 -14 125
+          -14 143 0 146 2 142 109 l-3 76 -37 3 -38 3 0 -60 0 -61 -60 0 -60 0 0 220 0
+          221 58 -3 57 -3 3 -58 3 -58 37 3 37 3 0 82 c0 45 -4 85 -8 89 -10 10 -181 15
+          -227 6z"/>
+          <path d="M4283 2203 c-10 -4 -13 -71 -13 -289 l0 -284 40 0 40 0 -2 287 -3
+          288 -25 1 c-14 1 -31 0 -37 -3z"/>
+          <path d="M4453 2203 l-23 -4 0 -285 0 -284 40 0 40 0 0 166 c0 162 7 193 29
+          121 5 -18 28 -79 51 -137 23 -58 44 -115 47 -128 5 -20 11 -23 42 -20 l36 3 0
+          285 0 285 -35 0 -35 0 -5 -165 c-3 -91 -8 -160 -13 -153 -4 6 -32 76 -63 155
+          -54 138 -69 170 -83 167 -3 -1 -16 -4 -28 -6z"/>
+          <path d="M4884 2198 c-3 -5 -16 -66 -29 -136 -13 -70 -37 -196 -53 -279 l-29
+          -153 38 0 c41 0 45 6 51 75 3 30 4 30 63 30 46 0 60 -4 62 -15 12 -90 11 -90
+          54 -90 36 0 39 2 35 23 -18 83 -49 244 -72 367 -36 192 -35 191 -80 188 -19
+          -1 -38 -6 -40 -10z"/>
+          <path d="M3147 2191 c-6 -2 -15 -9 -19 -15 -4 -6 -8 -122 -8 -258 0 -304 -8
+          -288 142 -288 144 0 135 -19 134 293 -1 140 -4 259 -8 262 -8 8 -219 13 -241
+          6z m185 -73 c2 -13 2 -114 0 -225 l-3 -203 -69 0 -70 0 0 225 0 225 69 0 c65
+          0 70 -2 73 -22z"/>
+          <path d="M2490 1623 l-203 -237 49 -43 c26 -24 52 -43 55 -43 7 0 392 446 397
+          460 2 5 -13 26 -32 46 -20 21 -36 42 -36 46 0 30 -50 -20 -230 -229z"/>
+          <path d="M1714 1663 c-320 -346 -594 -580 -789 -674 -63 -31 -78 -34 -159 -34
+          -84 0 -90 -1 -108 -26 l-20 -26 37 -134 c21 -74 52 -179 70 -234 18 -55 36
+          -115 40 -133 12 -55 72 -76 136 -48 12 5 23 -8 48 -56 87 -164 217 -268 339
+          -268 59 0 58 -4 37 95 -8 39 -15 89 -15 113 0 39 -5 48 -55 97 -69 67 -71 85
+          -11 85 48 0 354 -34 451 -51 33 -5 113 -18 177 -29 115 -18 316 -56 351 -66
+          27 -8 28 -18 -63 376 -71 305 -115 496 -131 570 -10 47 -43 181 -72 298 -80
+          318 -95 326 -263 145z"/>
+          <path d="M3127 1293 c-8 -7 -10 -557 -2 -564 2 -3 20 -3 40 -1 l35 4 0 99 0
+          99 69 0 c38 0 81 4 95 10 l26 10 0 165 0 165 -26 10 c-28 11 -227 14 -237 3z
+          m183 -178 l0 -115 -55 0 -55 0 0 115 0 115 55 0 55 0 0 -115z"/>
+          <path d="M3465 1287 c-3 -7 -4 -136 -3 -287 l3 -275 35 0 35 0 2 125 c1 69 2
+          182 2 253 l1 127 55 0 55 0 0 -95 0 -95 -40 0 c-39 0 -40 -1 -39 -32 0 -18 19
+          -87 43 -153 40 -112 45 -120 75 -129 54 -16 56 0 11 124 -22 62 -40 118 -40
+          125 0 6 15 15 33 20 l32 10 3 135 c2 118 0 136 -15 147 -24 18 -242 18 -248 0z"/>
+          <path d="M3812 1015 l3 -286 100 0 c55 -1 106 0 113 0 7 1 12 14 12 31 0 33
+          -2 33 -91 30 -63 -2 -71 11 -67 107 l3 78 45 3 c80 4 92 10 88 40 -3 26 -6 27
+          -68 32 l-65 5 -3 73 c-2 45 2 79 8 87 7 9 37 15 78 17 l67 3 0 30 0 30 -113 3
+          -112 3 2 -286z"/>
+          <path d="M4126 1287 c-16 -11 -17 -36 -16 -277 0 -149 5 -269 10 -274 11 -11
+          232 -12 249 -2 7 5 11 39 11 92 l0 84 -40 0 -40 0 0 -60 0 -61 -57 3 -58 3 -3
+          195 c-2 107 0 205 3 218 5 19 12 22 60 22 l54 0 3 -57 3 -58 38 -3 37 -3 0 86
+          c0 83 -1 86 -26 95 -38 15 -207 13 -228 -3z"/>
+          <path d="M4547 1292 c-10 -14 -108 -533 -105 -550 2 -10 14 -17 31 -19 31 -2
+          41 14 52 80 l6 37 53 0 c59 0 66 -7 66 -65 0 -24 6 -38 19 -45 23 -12 58 -13
+          65 -2 2 4 -11 84 -29 177 -19 94 -41 212 -50 264 -21 120 -27 131 -70 131 -18
+          0 -36 -3 -38 -8z"/>
+          <path d="M4800 1016 l0 -284 28 -4 c16 -2 34 -2 40 0 9 3 12 73 12 253 l0 249
+          55 0 55 0 0 -95 0 -95 -40 0 c-39 0 -40 -1 -40 -32 1 -18 22 -89 48 -158 l47
+          -125 35 0 c31 0 35 3 32 25 -1 14 -18 67 -37 118 -19 51 -35 98 -35 105 0 7
+          15 17 33 22 l32 10 3 135 c2 118 0 136 -15 147 -11 9 -56 13 -135 13 l-118 0
+          0 -284z"/>
+          <path d="M5147 1294 c-4 -4 -7 -132 -7 -285 l0 -277 36 -4 c20 -2 38 0 40 7 2
+          5 3 134 2 285 l-3 275 -30 3 c-17 2 -34 0 -38 -4z"/>
+          <path d="M5392 1288 c-6 -6 -12 -20 -12 -30 0 -16 -40 -229 -80 -427 -11 -52
+          -18 -96 -16 -98 2 -3 19 -5 37 -6 35 -2 36 -1 54 86 5 25 9 27 59 27 l54 0 7
+          -47 c4 -27 11 -53 17 -60 8 -10 56 -9 67 3 2 2 -6 57 -18 122 -94 491 -79 436
+          -121 440 -19 2 -41 -3 -48 -10z"/>
+          <path d="M2705 1199 c-93 -10 -198 -21 -232 -24 l-62 -6 5 -37 c14 -105 13
+          -102 42 -98 15 3 113 12 217 21 105 9 205 18 223 21 l32 5 0 69 c0 82 27 77
+          -225 49z"/>
+          <path d="M2431 719 c-12 -35 -18 -66 -14 -70 5 -4 114 -41 243 -83 129 -41
+          268 -87 308 -100 l73 -25 10 26 c5 14 18 38 29 53 11 16 20 33 20 39 0 5 -141
+          56 -312 112 -172 56 -318 104 -324 106 -7 2 -21 -22 -33 -58z"/>
+          </g>
           </svg>
-          <h1 class="title">Developer Channel</h1>
+          <h1 class="title">Pie Scotland</h1>
         </a>
       </app-toolbar>
     </app-header>
