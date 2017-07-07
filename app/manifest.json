@@ -1,0 +1,8 @@
+{
+  "name": "Chrome Developer Channel",
+  "short_name": "Chrome Developer Channel",
+  "description": "Show for web developers",
+  "start_url": "/",
+  "display": "standalone"
+  
+}
