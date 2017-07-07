@@ -1,125 +1,51 @@
 <!DOCTYPE html>
-<html lang="en">
+<!--[if lt IE 7]>
+<html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>
+<html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>
+<html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js"> <!--<![endif]-->
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Progressive Web Apps</title>
-  <link rel="stylesheet" href="/css/app.css">
-  <link rel="manifest" href="/manifest.json">
 
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <!-- Meta-Information -->
+    <title>ACME Inc.</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="description" content="ACME Inc.">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <meta name="apple-mobile-web-app-title" content="Wisdom Pet">
-  <meta name="apple-touch-icon" content="images/icons/icon-152x152.png">
+    <!-- Vendor: Bootstrap Stylesheets http://getbootstrap.com -->
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+    <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
 
-  <meta name="msapplication-TileImage" content="images/icons/icon-144x144.png">
-  <meta name="msapplication-TileColor" content="#2F3BA2">
+    <!-- Our Website CSS Styles -->
+    <link rel="stylesheet" href="css/main.css">
 
 </head>
-<body>
-<div class="loader">
-  <div class="loader-text">Loading...</div>
-  <div class="progress">
-      <div class="progress-bar progress-bar-danger progress-bar-striped active" role="progressbar" style="width: 100%"></div>
-  </div>
-</div>
-<header>
-  <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
-    <div class="container">
-      <div class="navbar-header">
-        <img class="reload reloadbtn-lg" src="images/icons/icon_reload.svg" alt="Reload Button" />
-        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#collapse">
-          <span class="sr-only">Toggle navigation</span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-        </button>
-        <a class="navbar-brand" href="#slideshow"><h1>Wisdom<span class="subhead">Pet Medicine</span></h1></a>
-      </div><!-- navbar-header -->
-      <div class="collapse navbar-collapse" id="collapse">
-        <ul class="nav navbar-nav navbar-right">
-          <li><img class="reload reloadbtn" src="images/icons/icon_reload.svg" alt="Reload Button" /></li>
-          <li class="active"><a href="#slideshow">Home</a></li>
-          <li><a href="#adoption">Adoption</a></li>
-          <li><a href="#appointments">Appointments</a></li>
-        </ul>
-      </div><!-- navbar collapse -->
-    </div><!-- navbar container -->
-  </nav><!-- nav -->
-  <script id="slideshow-template" type="text/x-handlebars-template">
-    <div class="carousel fade" data-ride="carousel" id="slideshow">
-      <div class="carousel-inner">
-        {{#each slideshow}}
-          {{#if @first}}
-            <div class="item active"><img src="images/pets/{{filename}}.jpg" alt="{{pet}} photo"></div>
-          {{else}}
-            <div class="item"><img src="images/pets/{{filename}}.jpg" alt="{{pet}} photo"></div>
-          {{/if}}
-        {{/each}}
-      </div><!--carousel inner -->
-      <a class="left carousel-control" href="#slideshow" role="button" data-slide="prev"></a>
-      <a class="right carousel-control" href="#slideshow" role="button" data-slide="next"></a>
-    </div><!--carousel fade -->
-  </script>
-  <div id="slideshow-content"></div>
-</header>
-<main>
-  <div class="page" id="adoption">
-    <div class="container">
-      <h2 class="page-headline">Adoptions</h2>
-      <p>These loving and deserving pets need a home. Please help us find a place for them. Click on their photo for more information.</p>
-      <script id="adoption-template" type="text/x-handlebars-template">
-        {{#each adoption}}
-          <div class="col-md-2 col-sm-3 col-xs-4 openpetmodal" data-toggle="modal" data-target="#wisdompetmodal" data-petname="{{pet}}" data-petbreed="{{breed}}" data-petowner="{{owner}}" data-petinfo="{{description}}" data-petimage="{{filename}}">
-            <img class="img-circle" src="images/pets/{{filename}}_tn.jpg" alt="{{pet}} photo"/>
-          </div><!-- column -->
-        {{/each}}
-      </script>
-      <div id="adoption-content"></div>
-    </div><!-- container -->
-  </div><!-- page-adoption -->
-  <div class="page" id="appointments">
-    <div class="container">
-      <h2 class="page-headline">Appointments</h2>
-      <p>Here's the pets that came in this week for an appointment. Click on a pet's photo for more info.</p>
+<body ng-app="tutorialWebApp">
+<!--[if lt IE 7]>
+<p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade
+    your browser</a> to improve your experience.</p>
+<![endif]-->
 
-      <script id="appointments-template" type="text/x-handlebars-template">
-        {{#each appointments}}
-          <div class="appointment media openpetmodal" data-toggle="modal" data-target="#wisdompetmodal" data-petname="{{pet}}" data-petbreed="{{breed}}" data-petowner="{{owner}}" data-petinfo="{{reason}}" data-petimage="{{filename}}">
-            <div class="media-left media-top">
-              <img class="media-object appointment-img img-rounded" src="images/pets/{{filename}}_tn.jpg" alt="{{pet}} photo">
-            </div><!-- media-left media-top -->
-            <div class="media-body">
-              <h3 class="media-heading appointments-heading">{{pet}}, <span class="appointment-breed">{{breed}}</span></h3>
-              <div class="appointment-owner"><span class="appointment-owner-title">Owner: </span> <span class="appointment-owner-name">{{owner}}</span></div>
-              <div class="appointment-reason">{{reason}}</div>
-            </div><!-- media-body -->
-          </div><!-- appointment media openpetmodal -->
-        {{/each}}
-      </script>
-      <div id="appointments-content"></div>
-    </div><!-- container -->
-  </div><!-- page-appointments -->
-</main>
+<!-- Our Website Content Goes Here -->
+<div ng-include='"templates/header.html"'></div>
+<div ng-view></div>
+<div ng-include='"templates/footer.html"'></div>
 
-<div class="modal fade" id="wisdompetmodal" tabindex="-1" role="dialog" aria-labelledby="petModal">
-  <div class="modal-dialog" data-dismiss="modal" aria-label="Close" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" arial-label="Close" role="document"><span aria-hidden="true">&times;</span></button>
-        <h2 class="modal-title modal-petname"></h2>
-        <div class="modal-petbreed"></div>
-      </div><!-- modal header -->
-      <div class="modal-body">
-        <img class="img-responsive modal-petimage" />
-        <p class="modal-petinfo"></p>
-      </div><!--modal-body-->
-    </div><!-- modal content -->
-  </div><!-- modal dialog -->
-</div><!-- modal fade -->
+<!-- Vendor: Javascripts -->
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 
-<script src="js/app.js"></script>
+<!-- Vendor: Angular, followed by our custom Javascripts -->
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.18/angular.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.18/angular-route.min.js"></script>
+
+<!-- Our Website Javascripts -->
+<script src="js/main.js"></script>
+
 </body>
 </html>
