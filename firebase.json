@@ -1,0 +1,13 @@
+{
+  "database": {
+  },
+  "hosting": {
+    "public": "./build/bundled/",
+    "rewrites": [
+      {
+        "source": "**/*",
+        "destination": "/index.html"
+      }
+    ]
+  }
+}

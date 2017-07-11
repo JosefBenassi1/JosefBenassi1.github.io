@@ -1,0 +1,269 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/iron-list/iron-list.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/app-localize-behavior/app-localize-behavior.html">
+<link rel="import" href="my-icons.html">
+
+<dom-module id="view-posts">
+  <template>
+    <style>
+      :host {
+        display: block;
+        margin-bottom: 40px;
+      }
+
+      #list {
+        max-width: 100%;
+        /* Hack to get around https://github.com/PolymerElements/iron-list/issues/329 */
+        padding-top: 527px;
+        margin-top: -527px;
+        position: static;
+      }
+
+      .channel-name {
+        color: white;
+        letter-spacing: 2px;
+        font-weight: 500;
+        word-wrap: break-word;
+        word-break: break-all;
+      }
+
+      .item {
+        @apply(--layout-horizontal);
+        margin: 8px 0;
+        background: rgba(255, 255, 255, 0.5);
+        padding: 16px;
+      }
+
+      .avatar {
+        height: 60px;
+        width: 60px;
+        border-radius: 50%;
+        box-sizing: border-box;
+        vertical-align: middle;
+        margin-right: 16px;
+      }
+
+      .name {
+        font-size: 12px;
+        font-weight: 300;
+        margin-bottom: 10px;
+      }
+
+      .giant {
+        font-size: 36px;
+        font-weight: 300;
+        padding: 0 50px 0 6px;
+        word-wrap: break-word;
+        word-break: break-word;  /* huh? this should be the same as above but shrug? */
+      }
+
+      .action-container {
+        font-size: 10px;
+        @apply(--layout-horizontal);
+        @apply(--layout-wrap);
+      }
+
+      .hint {
+        font-size: 10px;
+        visibility: hidden;
+        padding-left: 6px;
+      }
+
+      .hint.showing {
+        visibility: visible;
+      }
+
+      .heart-icon {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        color: var(--app-error-color);
+      }
+
+      .horizontal {
+        @apply(--layout-horizontal);
+      }
+
+      .vertical {
+        @apply(--layout-vertical);
+      }
+
+      iron-icon.action {
+        height: 16px;
+        vertical-align: middle;
+      }
+
+      button {
+        background: transparent;
+        border: none;
+        outline: none;
+        cursor: pointer;
+        margin: 0;
+        padding: 0;
+      }
+
+      button:hover {
+        color: var(--app-error-color);
+      }
+    </style>
+
+    <firebase-query
+      data="{{_fbPosts}}"
+      path="/posts/{{ref}}"
+      order-by-child="index"
+      limit-to-first="100">
+    </firebase-query>
+    <app-indexeddb-mirror
+      session="[[uid]]"
+      key="/posts/{{ref}}"
+      data="[[_fbPosts]]"
+      persisted-data="{{posts}}">
+    </app-indexeddb-mirror>
+
+    <h1 class="channel-name">[[channel]]</h1>
+    <iron-list items="[[posts]]" as="item" id="list" scroll-target="document">
+      <template>
+        <div>
+          <div class="item">
+            <div class="horizontal">
+              <img class="avatar" sizing="contain" src="[[item.image]]">
+              <div class="vertical">
+                <div class="giant" title="[[_getTitle(item.original)]]">[[item.message]]</div>
+                <div class="hint">[[item.original]]&nbsp;</div>
+
+                <span class="action-container">
+                  <span class="fake-button">
+                    <iron-icon icon="icons:time" class="action"></iron-icon>[[_getDate(item.createdAt)]]
+                  </span>
+                  <span class="fake-button"hidden$="[[!_hasLocation(item.location)]]">
+                    <iron-icon icon="icons:location" class="action"></iron-icon>[[item.location]]
+                  </span>
+                  <button hidden$="[[!_shouldEdit(item, offline)]]" ref="[[item.$key]]" on-click="_delete">
+                    <iron-icon icon="icons:delete" class="action"></iron-icon>{{localize('delete-post')}}
+                  </button>
+
+                  <button on-click="_showHint" hidden$="[[!_shouldShowHint(item)]]">
+                    <iron-icon icon="icons:help" class="action"></iron-icon>{{localize('hint-post')}}
+                  </button>
+                </span>
+              </div>
+            </div>
+            <div class="heart-icon">
+              <span>[[item.likes]]</span>
+              <paper-icon-button icon="icons:favorite-border" on-click="_like" ref="[[item.$key]]" disabled$="[[offline]]"></paper-icon-button>
+            </div>
+          </div>
+        </div>
+      </template>
+    </iron-list>
+  </template>
+
+  <script>
+    var monthNames = [
+      "January", "February", "March",
+      "April", "May", "June", "July",
+      "August", "September", "October",
+      "November", "December"
+    ];
+
+    Polymer({
+      is: 'view-posts',
+      behaviors: [
+        Polymer.AppLocalizeBehavior
+      ],
+      properties: {
+        channel: {
+          type: String
+        },
+
+        ref: {
+          type: String
+        },
+
+        uid: {
+          type: String
+        },
+
+        posts: {
+          type: Array
+        },
+
+        offline: {
+          type: Boolean,
+          value: false
+        }
+      },
+
+      _getTitle: function(title) {
+        return title || '';
+      },
+
+      _getDate: function(timestamp) {
+        var date = new Date(timestamp);
+        var seconds = Math.floor((new Date() - date) / 1000);
+
+        if (seconds < 3600) {
+          var minutes = Math.floor(seconds/60)
+          return (minutes > 1) ? minutes + " minutes ago" : "1 minute ago";
+        } else if (seconds < 86400) {
+          var hours = Math.floor(seconds/3600)
+          return (hours > 1) ? hours + " hours ago" : "1 hour ago";
+        } else {
+          var day = date.getDate();
+          var monthIndex = date.getMonth();
+          var year = date.getFullYear();
+          return day + ' '  + monthNames[monthIndex] + ' ' + year;
+        }
+      },
+
+      _like: function(event) {
+        var button = this._getEventTarget(event);
+        var ref = button.ref;
+
+        if (button.icon === 'icons:favorite-border') {
+          button.icon = 'icons:favorite';
+          this.fire('post-like', {ref: ref, channelRef: this.ref});
+        } else {
+          button.icon = 'icons:favorite-border';
+          this.fire('post-unlike', {ref: ref, channelRef: this.ref});
+        }
+      },
+
+      _delete: function(event) {
+        var button = this._getEventTarget(event);
+        var ref = button.ref;
+        this.fire('post-delete', {ref: ref, channelRef: this.ref});
+      },
+
+      _showHint: function(event) {
+        var button = this._getEventTarget(event);
+
+        // lol.
+        var hintNode = button.parentNode.parentNode.querySelector('.hint');
+        if (hintNode)
+          hintNode.className += ' showing';
+      },
+
+      _hasLocation: function(location) {
+        return !!location;
+      },
+
+      _shouldEdit: function(item, offline) {
+        return !offline && this.uid === item.uid;
+      },
+
+      _shouldShowHint: function(item) {
+        return (item.original !== undefined);
+      },
+
+      _getEventTarget: function(event) {
+        var button = Polymer.dom(event).localTarget;
+
+        // TODO: figure out why this is: If you click on the icon, the
+        // rootTarget/localTarget is the icon and not the button
+        return (button.tagName === 'IRON-ICON') ? button.parentNode : button;
+      }
+    });
+  </script>
+</dom-module>

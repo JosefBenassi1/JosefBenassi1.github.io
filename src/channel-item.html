@@ -1,0 +1,116 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<dom-module id="channel-item">
+  <template>
+    <style>
+      :host {
+        display: block;
+        box-sizing: border-box;
+      }
+
+      :host(.iron-selected) {
+        background: rgba(255, 255, 255, 0.3);
+      }
+
+      :host(.iron-selected) a {
+        font-weight: bold;
+      }
+
+      [hidden] {
+        display: none !important;
+      }
+
+      a {
+        box-sizing: border-box;
+        color: #455A64;
+        display: block;
+        font-weight: 300;
+        text-decoration: none;
+        width: 100%;
+      }
+
+      .channel-icon {
+        display: block;
+        color: rgba(0, 0, 0, 0.4);
+      }
+
+      .channel-icon:hover {
+        color: rgba(0, 0, 0, 0.9);
+      }
+
+      .channel-icon__left {
+        float: left;
+        padding: 8px; /* Put it here to deal \w paper-icon-button internal paddings */
+
+      }
+
+      .channel-icon__right {
+        float: right;
+      }
+
+      .channel-name {
+        display: block;
+        overflow: hidden;
+        padding: 8px; /* Put it here to deal \w paper-icon-button internal paddings */
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        width: auto;
+      }
+    </style>
+
+    <a href="/[[channel.name]]?lang=[[language]]">
+      <iron-icon 
+        class="channel-icon channel-icon__left"
+        icon$=[[_getIconName(public)]]>
+      </iron-icon>
+      <paper-icon-button 
+        class="channel-icon channel-icon__right" 
+        channel="[[channel]]" 
+        icon="icons:settings"
+        on-click="_showEditChannel" 
+        hidden$="[[!_shouldShowChannelSettings(channel, uid, offline)]]">
+      </paper-icon-button>
+
+      <span class="channel-name" title="[[channel.name]]">[[channel.name]]</span>
+    </a>
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'channel-item',
+
+      properties: {
+        channel: {
+          type: Object
+        },
+
+        public: {
+          type: Boolean,
+          value: false
+        },
+
+        uid: {
+          type: String
+        },
+
+        offline: {
+          type: Boolean,
+          value: false
+        }
+      },
+
+      _showEditChannel: function(event) {
+        this.fire('edit-channel', {channel: this.channel});
+      },
+
+      _shouldShowChannelSettings: function(channel, uid, offline) {
+        return !offline && (channel.owner === uid);
+      },
+
+      _getIconName: function(isPublic) {
+        return 'icons:' + (isPublic ? 'public' : 'private');
+      }
+    });
+  </script>
+</dom-module>

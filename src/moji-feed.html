@@ -1,0 +1,553 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/app-layout/app-drawer/app-drawer.html">
+<link rel="import" href="../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
+<link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
+<link rel="import" href="../bower_components/app-layout/app-header-layout/app-header-layout.html">
+<link rel="import" href="../bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
+<link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
+
+<link rel="import" href="../bower_components/app-route/app-location.html">
+<link rel="import" href="../bower_components/app-route/app-route.html">
+
+<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../bower_components/iron-selector/iron-selector.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-query.html">
+<link rel="import" href="../bower_components/app-storage/app-indexeddb-mirror/app-indexeddb-mirror.html">
+
+<link rel="import" href="my-icons.html">
+<link rel="import" href="new-post.html">
+<link rel="import" href="channel-item.html">
+<link rel="import" href="firebase-helper.html">
+<link rel="import" href="view-posts.html">
+
+<dom-module id="moji-feed">
+  <template>
+    <style>
+      :host {
+        --paper-tabs-selection-bar-color: var(--app-primary-color);
+        --paper-tab-ink: var(--app-primary-color);
+        display: block;
+      }
+
+      [hidden] {
+        display: none !important;
+      }
+
+      app-drawer {
+        --app-drawer-content-container: {
+          background: transparent;
+        };
+        --app-drawer-width: 220px;
+      }
+
+      .drawer-background {
+        width: 100%;
+        height: 100%;
+      }
+
+      .scrollable-list {
+        /*
+           64px is the height of header
+           and 72px is the height of create channel button
+                    with all margins
+        */
+        height: calc(100% - 64px - 72px);
+        overflow: auto;
+      }
+
+      .main-content {
+        padding: 10px;
+        max-width: 540px;
+        margin: auto;
+      }
+
+      .left-toolbar {
+        padding: 0;
+        color: white;
+        letter-spacing: 2px;
+        font-size: 30px;
+        padding-left: 16px;
+        vertical-align: middle;
+      }
+
+      .left-toolbar select {
+        -webkit-appearance:none;
+        -moz-appearance:none;
+        appearance:none;
+        box-sizing: border-box;
+        display: inline-block;
+        border: 0;
+        outline: 0;
+        background: transparent;
+        font-size: 30px;
+        cursor: pointer;
+        position: relative;
+      }
+
+      .select-wrapper {
+        position: relative;
+        width: 46px;
+      }
+
+      .select-wrapper:after {
+        content: "";
+        width: 0;
+        height: 0;
+        border-left: 5px solid transparent;
+        border-right: 5px solid transparent;
+        border-top: 6px solid var(--app-secondary-color);
+        position: absolute;
+        top: 17px;
+        right: 0;
+        pointer-events: none;
+      }
+
+      select:focus {
+        background-color: #7bd6cf;
+      }
+
+      channel-item {
+        width: 100%;
+      }
+
+      /* logout button */
+      app-toolbar paper-button {
+        font-size: 14px;
+        letter-spacing: 1px;
+        color: white;
+      }
+
+      paper-button.create-channel {
+        display: block;
+        text-align: center;
+        box-sizing: border-box !important;
+        font-size: 14px;
+        letter-spacing: 1px;
+        padding: 4px 0;
+        margin: 20px 16px;
+      }
+
+      .avatar {
+        border-radius: 50%;
+        width: 36px;
+        height: 36px;
+        vertical-align: middle;
+        margin-left: 16px;
+      }
+
+      .spacer {
+        @apply(--layout-flex);
+        @apply(--layout-flex-auto);
+      }
+
+      paper-button[raised] {
+        background-color: var(--app-primary-color);
+        color: white;
+        font-size: 14px;
+      }
+
+      @media (max-width: 620px) {
+        .drawer-background {
+          margin-right: 0;
+          background: white;
+        }
+        .left-toolbar {
+          color: var(--app-primary-text-color);
+        }
+      }
+
+      .giant-emoji {
+        font-size: 4.2em;
+        text-align: center;
+      }
+
+      .no-internet, new-post, new-channel {
+        display: block;
+        box-sizing: border-box;
+        margin: auto;
+        width: 100%;
+        background: rgba(255, 255, 255, 0.5);
+        margin-bottom: 40px;
+        box-shadow:0px 0px 10px rgba(0, 0, 0, 0.14);
+        opacity: 0;
+        padding: 20px;
+      }
+
+      .animate-appear {
+        animation: appear 300ms ease-in 300ms forwards;
+        -o-animation: appear 300ms ease-in 300ms forwards;
+        -moz-animation: appear 300ms ease-in 300ms forwards;
+        -webkit-animation: appear 300ms ease-in 300ms forwards;
+      }
+
+      .animate-disappear {
+        animation: disappear 300ms ease-in 300ms forwards;
+        -o-animation: disappear 300ms ease-in 300ms forwards;
+        -moz-animation: disappear 300ms ease-in 300ms forwards;
+        -webkit-animation: disappear 300ms ease-in 300ms forwards;
+      }
+
+      @keyframes appear { from { opacity: 0; } to { opacity: 1; } }
+      @-moz-keyframes appear { from { opacity: 0; } to { opacity: 1; } }
+      @-webkit-keyframes appear { from { opacity: 0; } to { opacity: 1; } }
+      @-o-keyframes appear { from { opacity: 0; } to { opacity: 1; } }
+
+      @keyframes disappear { from { opacity: 1; } to { opacity: 0; } }
+      @-moz-keyframes disappear { from { opacity: 1; } to { opacity: 0; } }
+      @-webkit-keyframes disappear { from { opacity: 1; } to { opacity: 0; } }
+      @-o-keyframes disappear { from { opacity: 1; } to { opacity: 0; } }
+    </style>
+
+    <firebase-query data="{{_publicChannels}}" path="/publicChannels"></firebase-query>
+    <app-indexeddb-mirror
+      session="[[uid]]"
+      key="/publicChannels"
+      data="[[_publicChannels]]"
+      persisted-data="{{publicChannels}}">
+    </app-indexeddb-mirror>
+    <app-indexeddb-mirror
+      session="[[uid]]"
+      key="/channels"
+      data="[[_channels]]"
+      persisted-data="{{channels}}">
+    </app-indexeddb-mirror>
+
+    <app-location route="{{route}}"></app-location>
+    <app-route
+        route="{{route}}"
+        pattern="/:page"
+        data="{{routeData}}"
+        tail="{{subroute}}"
+        query-params="{{queryParams}}"></app-route>
+
+    <app-drawer-layout id="drawerLayout">
+      <!-- Drawer content -->
+      <app-drawer id="drawer" swipe-open>
+        <div class="drawer-background">
+          <app-toolbar class="left-toolbar">👋🆒🐱<span class="select-wrapper">
+              <select id="selectLanguage" value="{{queryParams.lang}}" on-change="_selectLanguageChanged">
+                <option value="al">🇦🇱</option>
+                <option value="en">🇬🇧</option>
+                <option value="es">🇪🇸</option>
+                <option value="fr">🇫🇷</option>
+                <option value="it">🇮🇹</option>
+                <option value="jp">🇯🇵</option>
+                <option value="ro">🇷🇴</option>
+                <option value="zh">🇨🇳</option>
+                <option value="tw">🇹🇼</option>
+                <option value="ua">🇺🇦</option>
+                <option value="br">🇧🇷</option>
+                <option value="de">🇩🇪</option>
+                <option value="sv">🇸🇪</option>
+                <option value="fi">🇫🇮</option>
+                <option value="mk">🇲🇰</option>
+                <option value="sw">🇹🇿</option>
+                <option value="he">🇮🇱</option>
+                <option value="nl">🇳🇱</option>
+              </select>
+            </span>
+          </app-toolbar>
+
+          <div class="scrollable-list">
+            <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
+              <template is="dom-repeat" items="[[publicChannels]]" initial-count="10">
+                <channel-item drawer-toggle public channel="[[item]]" name="[[item.name]]" uid="[[user.uid]]" offline="[[offline]]" language="[[language]]"></channel-item>
+              </template>
+
+              <template is="dom-repeat" items="[[channels]]" initial-count="10">
+                <channel-item drawer-toggle channel="[[item]]" name="[[item.name]]" uid="[[user.uid]]" offline="[[offline]]" language="[[language]]"></channel-item>
+              </template>
+            </iron-selector>
+          </div>
+
+          <paper-button raised hidden$="[[offline]]" id="createChannelButton"
+              on-click="_showCreateChannel" class="create-channel">
+            <iron-icon icon="icons:add"></iron-icon>
+            {{localize('create-channel-button')}}
+          </paper-button>
+        </div>
+      </app-drawer>
+
+      <!-- Main content -->
+      <app-header-layout id="header">
+        <app-header fixed>
+          <app-toolbar>
+            <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
+            <div class="spacer"></div>
+
+            <div id="createChannelButton" class="userInfo">
+              <img class="avatar" alt="github avatar" src="[[user.photoURL]]">
+              <paper-button on-tap="logout" hidden$="[[offline]]">{{localize('sign-out')}}</paper-button>
+            </div>
+          </app-toolbar>
+        </app-header>
+
+        <div class="main-content">
+          <div id="loading">
+            <div class="giant-emoji">✋ 🎉 ⏳ 🤖</div>
+          </div>
+
+          <div hidden$="[[!offline]]" class="no-internet animate-appear">
+            <iron-icon icon="icons:cloud-off"></iron-icon>&nbsp;{{localize('no-internet-title')}}<br>
+            <span class="subtitle">{{localize('no-internet-subtitle')}}</span>
+          </div>
+
+          <new-post hidden channel="[[page]]" id="newPost" class="animate-appear" language="[[language]]" resources="[[resources]]"></new-post>
+          <new-channel hidden id="newChannel" class="animate-appear" language="[[language]]"></new-channel>
+          <iron-pages id="pages"
+              selected="[[page]]"
+              attr-for-selected="name"
+              role="main">
+            <template is="dom-repeat" items="[[publicChannels]]" initial-count="10">
+              <view-posts name="[[item.name]]" uid="[[user.uid]]" channel="[[item.name]]" ref="[[item.$key]]" offline="[[offline]]" language="[[language]]" resources="[[resources]]"></view-posts>
+            </template>
+            <template is="dom-repeat" items="[[channels]]" initial-count="10">
+              <view-posts name="[[item.name]]" uid="[[user.uid]]" channel="[[item.name]]" ref="[[item.key]]" offline="[[offline]]" language="[[language]]" resources="[[resources]]"></view-posts>
+            </template>
+          </iron-pages>
+        </div>
+      </app-header-layout>
+
+    </app-drawer-layout>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'moji-feed',
+
+      behaviors: [Polymer.FirebaseHelper, Polymer.AppLocalizeBehavior],
+
+      properties: {
+        page: {
+          type: String
+        },
+
+        channels: {
+          type: Array,
+          value: []
+        },
+
+        publicChannels: {
+          type: Array
+        },
+
+        user: {
+          type: Object,
+          observer: '_updateUserInfo'
+        },
+
+        location: {
+          type: String
+        },
+
+        offline: {
+          type: Boolean,
+          observer: '_offlineChanged'
+        },
+      },
+
+      ready: function() {
+        this.loadResources(this.resolveUrl('locales.json'));
+        Polymer.RenderStatus.afterNextRender(this, function() {
+          // This looks like work, so do it later.
+          this._getLocation();
+        });
+      },
+
+      resizeHeader: function() {
+        this.$.header.fire('iron-resize');
+      },
+
+      observers: [
+        '_routePageChanged(routeData.page)',
+      ],
+
+      listeners: {
+        'new-post': '_postNewMessage',
+        'new-channel': '_createChannel',
+        'edit-channel': '_showEditChannel',
+        'delete-channel': '_deleteChannel',
+        'rename-channel': '_renameChannel',
+        'delete-users': '_deleteUsers',
+        'add-users': '_addUsers',
+        'post-like': '_postLike',
+        'post-unlike': '_postUnlike',
+        'post-delete': '_postDelete'
+      },
+
+      logout: function() {
+        firebase.auth().signOut();
+        this.$.newChannel.hidden = true;
+        this.$.newPost.hidden = true;
+        this.$.loading.hidden = true;
+      },
+
+      /*******************************
+       * Routes
+       *******************************/
+      _routePageChanged: function(page) {
+        this.page = page || 'global';
+      },
+
+      _selectLanguageChanged: function(event) {
+        this.set('queryParams.lang', event.target.value);
+        this.fire('language-changed', {value: event.target.value});
+        switch (event.target.value) {
+          case "he":
+          case "ar":
+          case "ff":
+          case "fa":
+          case "yi":
+          case "ur":
+            document.body.style.setProperty("direction", "rtl");
+            break;
+          default:
+            document.body.style.setProperty("direction","ltr");
+        }
+      },
+
+      _offlineChanged: function(offline, previous) {
+        if (previous === undefined) {
+          this._initialOffline = offline;
+        }
+
+        if (offline) {
+          this.$.newPost.hidden = true;
+        } else {
+          // If we were originally offline and came online, there is a delay between
+          // the mirror switching to live data, and the live data coming in from Firebase
+          // so throw up a loading screen
+          if (this._initialOffline) {
+            this.$.loading.hidden = false;
+            this.$.pages.hidden = true;
+            // We got things from Firebase now, so we can switch back to the easy case.
+            this._initialOffline = false;
+          } else {
+            this.$.newPost.hidden = false;
+          }
+        }
+      },
+
+      _updateUserInfo: function(user) {
+        this._firebaseUpdateUserInfo(user);
+      },
+
+      /*******************************
+       * Posts
+       *******************************/
+      _postNewMessage: function(event) {
+        var location = this.location || '';
+        this._firebaseAddMessage(event.detail.channel, event.detail.message, event.detail.original, location);
+      },
+
+      /*******************************
+       * Channels
+       *******************************/
+      _showCreateChannel: function() {
+        var resolvedPageUrl = this.resolveUrl('new-channel.html');
+        this.importHref(resolvedPageUrl, function() {
+          this.$.newChannel.create();
+        }, null, true);
+      },
+
+      _showEditChannel: function(event) {
+        var channelName = event.detail.channel;
+        var resolvedPageUrl = this.resolveUrl('new-channel.html');
+        this.importHref(resolvedPageUrl, function() {
+          this.$.newChannel.edit(channelName);
+        }, null, true);
+      },
+
+      _createChannel: function(event) {
+        this._firebaseAddChannel(event.detail.name, event.detail.users, event.detail.public);
+      },
+
+      _deleteChannel: function(event) {
+        this._firebaseDeleteChannel(event.detail.ref, event.detail.name);
+      },
+
+      _renameChannel: function(event) {
+        this._firebaseRenameChannel(event.detail.ref, event.detail.oldName, event.detail.newName);
+      },
+
+      /*******************************
+       * Users
+       *******************************/
+      _addUsers: function(event) {
+        this._firebaseAddUsers(event.detail.ref, event.detail.users);
+      },
+
+      _deleteUsers: function(event) {
+        this._firebaseDeleteUsers(event.detail.ref, event.detail.users);
+      },
+
+      /*******************************
+       * Posts
+       *******************************/
+      _postLike: function(event) {
+        this._firebaseLikeMessage(event.detail.ref, event.detail.channelRef);
+      },
+
+      _postUnlike: function(event) {
+        this._firebaseUnlikeMessage(event.detail.ref, event.detail.channelRef);
+      },
+
+      _postDelete: function(event) {
+        this._firebaseDeleteMessage(event.detail.ref, event.detail.channelRef);
+      },
+
+      _getLocation: function() {
+        var self = this;
+        navigator.geolocation.getCurrentPosition(function(position) {
+          var request = new XMLHttpRequest();
+          var method = 'GET';
+          var url = 'https://maps.googleapis.com/maps/api/geocode/json?latlng='
+              + position.coords.latitude + ','
+              + position.coords.longitude;
+
+          request.open('GET', url, true);
+          request.onreadystatechange = function() {
+            if (request.readyState == 4 && request.status == 200) {
+              var data = JSON.parse(request.responseText);
+              var addressComponents = data.results[0].address_components;
+
+              var city, state, country;
+              for(var i = 0; i < addressComponents.length; i++){
+                if (addressComponents[i].types == 'locality,political') {
+                  city = addressComponents[i].long_name;
+                } else if (addressComponents[i].types == 'administrative_area_level_1,political') {
+                  state = addressComponents[i].short_name;
+                } else if (addressComponents[i].types == 'country,political') {
+                  country = addressComponents[i].short_name;
+                }
+              }
+
+              // TODO: this probably changes when you're on mobile and it should
+              // be less bad and static.
+              var location = '';
+              if (city) location += city + ', ';
+              if (state) location += state + ', ';
+              if (country) location += country;
+              self.location = location;
+              console.log('We have a location!', self.location);
+            }
+          };
+          request.send();
+        });
+      }
+
+    });
+  </script>
+</dom-module>

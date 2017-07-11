@@ -1,0 +1,229 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-toggle-button/paper-toggle-button.html">
+
+
+<dom-module id="new-channel">
+  <template>
+    <style>
+      :host {
+        display: block;
+        @apply(--layout-flex);
+        position: relative;
+        z-index: 10;
+      }
+
+      :host([hidden]) {
+        display: none !important;
+      }
+
+      paper-button {
+        margin: 0;
+        font-size: 14px;
+        color: var(--app-secondary-color);
+      }
+
+      .title {
+        color: var(--app-secondary-text-color);
+        font-weight: 300;
+        font-size: 14px;
+        padding: 10px 20;
+      }
+
+      input {
+        width: 100%;
+        display: block;
+        font-size: 16px;
+        font-weight: 300;
+        border: none;
+        outline: none;
+        border-bottom: 1px solid #7bd6cf;
+        margin: 10px 0 15px 0;
+        background: transparent;
+        color: var(--app-primary-text-color);
+      }
+
+      ::-webkit-input-placeholder {color: var(--app-secondary-text-color);}
+      :-moz-placeholder {color: var(--app-secondary-text-color);}
+      ::-moz-placeholder {color: var(--app-secondary-text-color);}
+      :-ms-input-placeholder {color: var(--app-secondary-text-color);}
+
+      [hidden] {
+        display: none !important;
+      }
+
+      input:invalid {
+        border-bottom: 1px solid var(--app-error-color);
+      }
+
+      .horizontal {
+        @apply(--layout-horizontal);
+      }
+
+      .horizontal-reverse {
+        @apply(--layout-horizontal-reverse);
+        @apply(--layout-justified);
+      }
+
+      .inline-button {
+        width: 150px;
+      }
+
+      .public-settings {
+        padding: 0.7em 0;  /* match paper-buttons on the same line */
+        text-transform: uppercase;
+        font-size: 14px;
+      }
+
+      paper-toggle-button {
+        display: inline-block;
+        vertical-align: middle;
+        --paper-toggle-button-checked-bar-color:  var(--app-secondary-color);
+        --paper-toggle-button-checked-button-color:  var(--app-secondary-color);
+        --paper-toggle-button-checked-ink-color: var(--app-secondary-color);
+      }
+
+      .error {
+        color: var(--app-error-color);
+      }
+
+      .help {
+        font-size: 12px;
+        line-height: 1;
+        padding: 0;
+        margin: 0;
+        color: var(--app-secondary-text-color);
+      }
+    </style>
+
+    <div class="title" hidden$="[[_edit]]">{{localize('new-channel-header')}}</div>
+    <div class="title" hidden$="[[!_edit]]">{{localize('edit-channel-header')}}</div>
+
+    <div class="horizontal">
+      <input type="text" placeholder="{{localize('channel-name-placeholder')}}" id="name" required pattern="[^.#$\[\]/]+">
+    </div>
+
+    <div class="horizontal" hidden$="[[!_edit]]">
+      <input type="email" multiple placeholder="{{localize('channel-users-placeholder')}}" id="editUsers">
+      <paper-icon-button on-click="_addUsers" icon="icons:person-add"></paper-icon-button>
+      <paper-icon-button on-click="_deleteUsers" icon="icons:delete"></paper-icon-button>
+    </div>
+
+    <input type="email" multiple placeholder="{{localize('channel-users-placeholder')}}" id="newUsers" hidden$="[[_edit]]">
+    <span class="help">{{localize('private-channel-hint')}}</span>
+
+    <div class="horizontal-reverse">
+      <span>
+        <paper-button on-click="hide">{{localize('cancel')}}</paper-button>
+        <paper-button on-click="_createchannel" hidden$="[[_edit]]">{{localize('create')}}</paper-button>
+
+        <paper-button on-click="_deletechannel" hidden$="[[!_edit]]">{{localize('delete-channel')}}</paper-button>
+        <paper-button on-click="_renamechannel" hidden$="[[!_edit]]">{{localize('rename-channel')}}</paper-button>
+      </span>
+
+      <span class="public-settings" hidden$="[[_edit]]" title="A private channel is only visible to you and the friends you've added to it. A public channel is visible to everyone, and everyone can post in it.">
+        {{localize('private')}} <paper-toggle-button id="public"></paper-toggle-button>{{localize('public')}}
+      </span>
+    </div>
+
+    <div class="error" hidden id="error"></div>
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'new-channel',
+
+      behaviors: [
+        Polymer.AppLocalizeBehavior
+      ],
+
+      properties: {
+        _edit: {
+          type: Boolean,
+          value: false
+        }
+      },
+
+      attached: function() {
+        this.loadResources(this.resolveUrl('locales.json'));
+      },
+
+      edit: function(channel) {
+        this._channel = channel;
+        this.$.name.value = channel.name;
+        this.$.newUsers.value = '';
+
+        this._edit = true;
+        this.$.error.hidden = true;
+        this.hidden = false;
+      },
+
+      create: function() {
+        this.$.name.value = this.$.newUsers.value = '';
+        this._edit = false;
+        this.$.error.hidden = true;
+        this.hidden = false;
+      },
+
+      hide: function() {
+        this.hidden = true;
+        this._edit = false;
+      },
+
+      showError: function(message) {
+        this.$.error.innerHTML = message;
+        this.$.error.hidden = false;
+      },
+
+      _createchannel: function () {
+        var valid = this.$.name.validity.valid && this.$.newUsers.validity.valid;
+        if (!valid)
+          return;
+
+        var users = [];
+        if (this.$.newUsers.value.trim() !== '') {
+          users = this.$.newUsers.value.split(',')
+        }
+
+        this.fire('new-channel', {name: this.$.name.value.trim(), users: users, public:this.$.public.checked});
+      },
+
+      _deletechannel: function() {
+        this.fire('delete-channel', {ref: this._channel.key, name: this._channel.name});
+      },
+
+      _renamechannel: function() {
+        if (!this.$.name.validity.valid)
+          return;
+
+        this.fire('rename-channel', {ref: this._channel.key, oldName: this._channel.name, newName: this.$.name.value});
+      },
+
+      _deleteUsers: function() {
+        var valid = this.$.editUsers.validity.valid;
+        if (!valid)
+          return;
+
+        var users = [];
+        if (this.$.editUsers.value.trim() !== '') {
+          users = this.$.editUsers.value.split(',')
+        }
+
+        this.fire('delete-users', {ref: this._channel.key, users: users});
+      },
+
+      _addUsers: function() {
+        var valid = this.$.editUsers.validity.valid;
+        if (!valid)
+          return;
+
+        var users = [];
+        if (this.$.editUsers.value.trim() !== '') {
+          users = this.$.editUsers.value.split(',')
+        }
+
+        this.fire('add-users', {ref: this._channel.key, users: users});
+      },
+    });
+  </script>
+</dom-module>
