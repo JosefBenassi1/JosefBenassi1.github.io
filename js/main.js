@@ -3,7 +3,7 @@
   $(window).on("load", function() { // makes sure the whole site is loaded
     //preloader
     $("#status").fadeOut(); // will first fade out the loading animation
-    $("#preloader").delay(450).fadeOut("slow"); // will fade out the white DIV that covers the website.
+    $("#preloader").delay(600).fadeOut("slow"); // will fade out the white DIV that covers the website.
     
     //masonry
     $('.grid').masonry({
@@ -90,7 +90,7 @@
 
     //typed js
     $(".typed").typed({
-        strings: ["I'm a Web Developer", "Lets do this!","Boom"],
+        strings: ["Montreal inspired Bagels.", "New York Deli inspired fillings.", "Freshly ground coffee to go!","100% Organic Bagels"],
         typeSpeed: 100,
         backDelay: 900,
         // loop
