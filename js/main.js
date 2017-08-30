@@ -137,6 +137,7 @@
         $(this).removeClass('used');
     });
 
+
     //pop up porfolio
     $('.portfolio-image li a').magnificPopup({
       type: 'image',

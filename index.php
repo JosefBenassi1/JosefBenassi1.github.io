@@ -40,7 +40,7 @@
       <div class="for-sticky">
         <!--LOGO-->
         <div class="col-md-2 col-xs-6 logo">
-          <a href="index.html"><img alt="logo" class="logo-nav" src="images/logo.png"></a>
+          <a href="index.html"><img alt="logo" class="logo-nav" src="images/blackcircle2.png" style = "filter: opacity(75%);"></a>
         </div>
         <!--/.LOGO END-->
       </div>
@@ -99,7 +99,7 @@
             <div class="row">
               <div class="wrap-hero-content">
                   <div class="hero-content">
-                    <h1>BROSS</h1>
+                    <img class ="pd10" src="images/brooscopy.png">
                     <br>
                     <span class="typed"></span>
                   </div>
@@ -133,7 +133,7 @@
                       <h5 class="name">
                         J. Benassi
                       </h5>
-                      <img alt="signature" src="images/signaturejoe2.png">
+                  <!--     <img alt="signature" src="images/"> -->
                     </div>
                   </div>
                 </div>
@@ -164,20 +164,6 @@
                             <td> edinbrugh</td>
                           </tr>
                           <tr>
-                        <!--     <td class="title">Skype </td>
-                            <td class="break">:</td>
-                            <td> bagel</td>
-                          </tr>
-                          <tr>
-                            <td class="title">Dribbble </td>
-                            <td class="break">:</td>
-                            <td> Muh-Reza</td>
-                          </tr>
-                          <tr>
-                            <td class="title">Behance</td>
-                            <td class="break">:</td>
-                            <td> m-reza</td>
-                          </tr> -->
                         </table>
                       </div>
                     </div>
@@ -193,8 +179,7 @@
         <!--WORK-->
         <section class="grey-bg mar-tm-10" id="menu">
           <div class="container">
-            
-                <h3 style=" text-align:center; padding-bottom:20px; ">
+                <h3 style=" text-align:center;padding-bottom: 20px;">
                   <span>Menu</span>
                 </h3>
               <div class="row">
@@ -206,10 +191,7 @@
                       <div class="decription-wrap">
                         <div class="image-bg">
                            <p class="desc">Portobello - £5.00</p>
-                           
-                        </div
-
-                      </div>
+                        </div>
                     </a>
                   </li>
                   <li class="col-md-6">
@@ -245,28 +227,6 @@
                       </div>
                     </a>
                   </li>
-                  <!-- <li class="col-md-6">
-                    <a href="images/bw-5.png"><img alt="image" src="images/bw-5.png">
-                      <div class="decription-wrap">
-                        <div class="image-bg">
-                          <p class="desc">
-                            Presentation
-                          </p>  
-                        </div>
-                      </div>
-                    </a>
-                  </li>
-                  <li class="col-md-6">
-                    <a href="images/bw-6.png"><img alt="image" src="images/bw-6.png">
-                      <div class="decription-wrap">
-                        <div class="image-bg">
-                          <p class="desc">
-                            Letter Branding
-                          </p>
-                        </div>
-                      </div>
-                    </a>
-                  </li> -->
                 </ul>
                <!-- <!--  <!--/.PORTFOLIO IMAGE END-->
               </div>
@@ -866,21 +826,24 @@
                 <h3 class="title-small">
                   <span>Contact</span>
                 </h3>
-                <p class="content-detail">
-                 We would love to hear from you the bagels are waiting!!
-                </p>
+                <div class="alert"><p class ="border">Your Message has been sent!</p> </div>
+
+                   <!--  change email type back to email instead of text -->
 
               </div>
               <div class="col-md-9 content-right">
-                <form>
+                <form id="contactForm" name="contactform" method="post" action="send_email.php">
                   <div class="group">
-                    <input required="" type="text"><span class="highlight"></span><span class="bar"></span><label>Name</label>
+                    <input required="" id="name"  type="text" name="name"><span class="highlight"></span><span class="bar"></span><label>Name</label>
                   </div>
                   <div class="group">
-                    <input required="" type="email"><span class="highlight"></span><span class="bar"></span><label>Email</label>
+                    <input required="" id="email" type="email" name="email"><span class="highlight"></span><span class="bar"></span><label>Email</label>
+                  </div>
+                   <div class="group">
+                    <input required="" id="phone" type="text" name="phone"><span class="highlight"></span><span class="bar"></span><label>Mobile Number</label>
                   </div>
                   <div class="group">
-                    <textarea required=""></textarea><span class="highlight"></span><span class="bar"></span><label>Message</label>
+                    <textarea required="" id="message" name="message"></textarea><span class="highlight"></span><span class="bar"></span><label>Message</label>
                   </div>
                   <input id="sendMessage" name="sendMessage" type="submit" value="Send Message">
                 </form>
@@ -918,7 +881,7 @@
     <!--/.CONTENT-WRAP END-->
     </div>
     
-
+    <script src="https://www.gstatic.com/firebasejs/4.3.0/firebase.js"></script>
     <script src="js/jquery-1.9.1.min.js" type="text/javascript"></script>
     <script src="js/jquery.appear.js" type="text/javascript"></script>
     <script src="js/bootstrap.min.js" type="text/javascript"></script>

@@ -124,7 +124,8 @@ h1{
 .no-pad {padding: 0 !important; margin: 0 !important;}
 .pad-80 {padding-top: 80px;}
 .mar-t-50{margin-top: 50px !important;}
-.mar-tm-5{ margin-top: -10px;}
+.mar-tm-10{ margin-top: -10px;}
+.pd10{padding-bottom: 10px;}
 
 .white-col{
   background: #ffffff;
@@ -139,7 +140,7 @@ h1{
 
 /*---- span -----*/
 .title-small span { position: relative;}
-.title-small span:after {
+/*.title-small span:after {
   content: "";
   position: absolute;
   bottom: -20px;
@@ -147,9 +148,9 @@ h1{
   background: #DEDEDE;
   width: 28px;
   left: 0;
-}
+}*/
 .title-small-center span {position: relative;}
-.title-small-center span:after {
+/*.title-small-center span:after {
   content: "";
   display: block;
   margin: 0 auto;
@@ -158,11 +159,11 @@ h1{
   background: #DEDEDE;
   width: 28px;
   left: 0;
-}
+}*/
 /*----- background ------*/
 .grey-bg {
   background: #f6f6f6;
-  padding: 120px 0;
+  padding: 50px 0;
   display: block;
 }
 .white-bg {
@@ -226,7 +227,7 @@ h1{
   transition: all 0.3s;
 }
 .logo-nav {
-  padding: 6px 0 10px 0;
+  padding: 6px 0 20px 0;
   -webkit-transition: all 0.3s;
   -moz-transition: all 0.3s;
   -ms-transition: all 0.3s;
@@ -482,10 +483,11 @@ p {
 #home .typed {
   font-weight: 400;
   font-size: 16px;
-  line-height: 26px;
+  line-height: 15px;
   letter-spacing: 1.5px;
   margin: 0 auto;
-  opacity: 0.6;
+  opacity: 0.6; 
+
 }
 .year {
   font-size: 26px;
@@ -541,7 +543,7 @@ p {
   left: 50%;
   top: 50%;
   padding: 65px;
-  background: rgba(255, 255, 255, 0.8);
+  background: rgba(204,204,204,0.8);
   outline: 4px double #FFFFFF;
   outline-offset: 8px;
   -webkit-transform: translateX(-50%) translateY(-50%);
@@ -629,8 +631,8 @@ ul.portfolio-image li:hover {
   cursor: pointer;
 }
 ul.portfolio-image li:hover img {
-  -webkit-filter: grayscale(20%);
-  transform: scale(1.15);
+ /* -webkit-filter:  sepia(5%);
+  transform: scale(1.15);*/
 }
 ul.portfolio-image li:hover .image-bg {opacity: 1;}
 ul.portfolio-image li:hover .description-wrap {
@@ -642,8 +644,8 @@ ul.portfolio-image li img {
   height: 100%;
   left: 0;
   top: 0;
-  -webkit-filter: grayscale(100%);
-  transition: filter, transform, 0.5s;
+  /*-webkit-filter: sepia(15%);
+  transition: filter, transform, 0.5s;*/
 }
 ul.portfolio-image li .decription-wrap {
   position: absolute;
@@ -1090,6 +1092,23 @@ ul.portfolio-image li .desc{
 #contact input[type=submit]:hover {
   background: #2b2b2b;
   color: #ffffff;
+}
+.alert{
+
+  text-align:center;
+  padding-left: 10px;
+  padding:5px;
+  color: black;
+  margin-bottom: 10px;
+  position: relative;
+  display:none;
+}
+
+.border{
+
+  border-style: double;
+  border-width: 3px;
+  padding:5px;
 }
 @-webkit-keyframes inputHighlighter {
   from {
